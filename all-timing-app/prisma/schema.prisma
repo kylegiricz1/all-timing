@@ -75,6 +75,8 @@ model Race {
   location    String?
   distance    String?
   description String?  //@db.Text
+  level       String?      // "High School", "College", "Pro", "Amateur"
+  surface     String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   userId      String
@@ -84,4 +86,6 @@ model Race {
   @@index([date])
   @@index([userId])
   @@index([name])
+  @@index([level])
+  @@index([surface])
 }

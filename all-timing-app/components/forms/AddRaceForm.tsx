@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 
 interface AddRaceFormProps {
   onSuccess?: () => void
@@ -9,6 +11,7 @@ interface AddRaceFormProps {
 
 export default function AddRaceForm({ onSuccess }: AddRaceFormProps) {
   const router = useRouter()
+  const { data: session } = useSession()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [formData, setFormData] = useState({
@@ -19,7 +22,12 @@ export default function AddRaceForm({ onSuccess }: AddRaceFormProps) {
     location: '',
     distance: '',
     description: '',
+    level: '',
+    surface: '',
   })
+
+  // Check if user has Pro subscription
+  const isPro = session?.user && (session.user as any).subscriptionStatus === 'active'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -53,6 +61,8 @@ export default function AddRaceForm({ onSuccess }: AddRaceFormProps) {
         location: '',
         distance: '',
         description: '',
+        level: '',
+        surface: '',
       })
 
       router.refresh()
@@ -181,6 +191,78 @@ export default function AddRaceForm({ onSuccess }: AddRaceFormProps) {
             placeholder="e.g., Athlinks, RunSignUp"
           />
         </div>
+      </div>
+
+      {/* PREMIUM FIELDS */}
+      <div className="border-t pt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Advanced Details {!isPro && <span className="text-primary-600">🔒 Pro</span>}
+          </h3>
+          {!isPro && (
+            <Link
+              href="/pricing"
+              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            >
+              Upgrade to unlock
+            </Link>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="level" className="block text-sm font-medium text-gray-700 mb-1">
+              Race Level {!isPro && '🔒'}
+            </label>
+            <select
+              id="level"
+              name="level"
+              value={formData.level}
+              onChange={handleChange}
+              disabled={!isPro}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            >
+              <option value="">Select level</option>
+              <option value="High School">High School</option>
+              <option value="College">College</option>
+              <option value="Pro">Pro</option>
+              <option value="Amateur">Amateur</option>
+              <option value="Masters">Masters</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="surface" className="block text-sm font-medium text-gray-700 mb-1">
+              Surface Type {!isPro && '🔒'}
+            </label>
+            <select
+              id="surface"
+              name="surface"
+              value={formData.surface}
+              onChange={handleChange}
+              disabled={!isPro}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            >
+              <option value="">Select surface</option>
+              <option value="Road">Road</option>
+              <option value="Trail">Trail</option>
+              <option value="Track">Track</option>
+              <option value="Cross Country">Cross Country</option>
+            </select>
+          </div>
+        </div>
+
+        {!isPro && (
+          <p className="mt-3 text-sm text-gray-600">
+            💡 Upgrade to Pro to track race level and surface type
+          </p>
+        )}
+
+        {!isPro && (
+          <p className="mt-3 text-sm text-gray-600">
+            💡 Upgrade to Pro to track race level, surface type, and weather conditions
+          </p>
+        )}
       </div>
 
       <div>

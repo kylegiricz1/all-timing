@@ -12,6 +12,8 @@ const raceSchema = z.object({
   location: z.string().optional(),
   distance: z.string().optional(),
   description: z.string().optional(),
+  level: z.string().optional(),
+  surface: z.string().optional(),
 })
 
 // GET single race
