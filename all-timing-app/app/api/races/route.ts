@@ -42,6 +42,8 @@ export async function GET(request: Request) {
           ],
         }),
         ...(source && { source }),
+        ...(searchParams.get('level') && { level: searchParams.get('level')! }),      // NEW
+        ...(searchParams.get('surface') && { surface: searchParams.get('surface')! }), // NEW
       },
       orderBy: {
         date: 'desc',
