@@ -7,7 +7,6 @@ import { createCheckoutSession, createCustomer } from '@/lib/stripe'
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
-    
     if (!session?.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -27,7 +26,6 @@ export async function POST(request: Request) {
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
     })
-
     if (!user) {
       return NextResponse.json(
         { error: 'User not found' },
@@ -37,7 +35,6 @@ export async function POST(request: Request) {
 
     // Create Stripe customer if doesn't exist
     let customerId = user.stripeCustomerId
-
     if (!customerId) {
       const customer = await createCustomer(user.email, user.name || undefined)
       customerId = customer.id
