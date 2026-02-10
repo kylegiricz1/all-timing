@@ -19,6 +19,9 @@ export default function Pricing() {
     setLoading(plan)
 
     try {
+      console.log('=== CHECKOUT DEBUG ===')
+      console.log('Price ID:', priceId)
+      
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: {
@@ -28,6 +31,8 @@ export default function Pricing() {
       })
 
       const data = await response.json()
+      console.log('Response status:', response.status)
+      console.log('Response data:', data)
 
       if (data.url) {
         window.location.href = data.url
@@ -149,7 +154,7 @@ export default function Pricing() {
               </div>
             ) : (
               <button
-                onClick={() => handleSubscribe(process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || '', 'monthly')}
+                onClick={() => handleSubscribe(process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID!, 'monthly')}
                 disabled={loading === 'monthly'}
                 className="w-full px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors font-medium disabled:bg-gray-400"
               >

@@ -37,8 +37,8 @@ export async function GET(request: Request) {
         userId: session.user.id,
         ...(search && {
           OR: [
-            { name: { contains: search, mode: 'insensitive' } },
-            { location: { contains: search, mode: 'insensitive' } },
+            { name: { contains: search, }}, //mode: 'insensitive' } },  SQLITE doesn't support case-insensitive search with 'contains'
+            { location: { contains: search, }}  //mode: 'insensitive' } },    SQLITE doesn't support case-insensitive search with 'contains'
           ],
         }),
         ...(source && { source }),
