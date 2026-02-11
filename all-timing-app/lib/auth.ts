@@ -56,8 +56,24 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.sub!
+        
+        // Fetch fresh user data to get subscription status
+        const user = await prisma.user.findUnique({
+          where: { id: token.sub! },
+          select: { subscriptionStatus: true },
+        })
+        
+        if (user) {
+          (session.user as any).subscriptionStatus = user.subscriptionStatus
+        }
       }
       return session
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id
+      }
+      return token
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
